@@ -1,5 +1,5 @@
-var twitter = require('twitter');
-var spotify = require('spotify');
+var Twitter = require('twitter');
+var Spotify = require('spotify');
 var request = require('request');
 var keys = require('./keys.js');
 var fs = require('fs');
@@ -14,7 +14,7 @@ switch (command) {
         mySpotify();
         break;
     case 'movie-this':
-        myMovies();
+        myMovie();
         break;
     case 'do-what-it-says':
         doWhatItSays();
@@ -30,8 +30,28 @@ var myTweets = function() {
     client.get('statuses/user_timeline', criterias, function(error, tweets, response) {
         if (error) {
             for (var i = 0; i < tweets.length; i++) {
-                console.log
+                appendData(tweets[i].created_at);
+                appendData(tweets[i].text);
             }
         }
     })
+}
+
+var mySpotify = function(soundtrack) {
+    var spotify = new Spotify(keys.spotify);
+
+        if(soundtrack == undefined) {
+            soundtrack = process.argv[3];
+        }
+    
+    Spotify.search({type: 'track', query: soundtrack}, function(err, data) {
+        appendData('Artist:' + data.tracks.items[0].artists[0].name);
+        appendData('Song' + data.tracks.items[0].name);
+        appendData('Album:' + data.tracks.items[0].album.name);
+        appendData('Preview URL:' + data.tracks.items[0].preview_url);
+    })
+}
+
+var myMovie = function() {
+    
 }
